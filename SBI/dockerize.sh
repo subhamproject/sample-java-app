@@ -18,8 +18,8 @@ case $BRANCH_NAME in
     dockerfile=Dockerfile.develop
     ;;
   *)
-    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
-    tag="$BRANCH_NAME:$tag"
+    tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    tag="$BRANCH_NAME:$tags"
     dockerfile=Dockerfile.tag
 esac
 
