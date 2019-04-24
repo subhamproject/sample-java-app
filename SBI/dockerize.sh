@@ -4,14 +4,17 @@ export PATH="$PATH:/usr/local/bin"
 case $BRANCH_NAME in
   qa)
     tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    tag="$BRANCH_NAME:$tag"
     dockerfile=Dockerfile.develop
     ;;
   develop)
     tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    tag="$BRANCH_NAME:$tag"
     dockerfile=Dockerfile.develop
     ;;
   master)
     tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    tag="$BRANCH_NAME:$tag"
     dockerfile=Dockerfile.develop
     ;;
   *)
