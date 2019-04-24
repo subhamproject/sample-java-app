@@ -1,0 +1,11 @@
+version: '2'
+services:
+     
+  maven-app-build:
+     user: "${USERID}:${GROUPID}"
+     image: maven
+     volumes:
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      - "${JENKINS_HOME}:${JENKINS_HOME}:rw"
+      - "${WORKSPACE}:${WORKSPACE}:rw"
