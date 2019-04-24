@@ -3,20 +3,33 @@ export PATH="$PATH:/usr/local/bin"
 #docker-compose build maven-app-image-docker
 case $BRANCH_NAME in
   qa)
-    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+   if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+    tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    tag=$BRANCH_NAME-$tags
     dockerfile=Dockerfile.develop
+    fi
     ;;
   develop)
-    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+  if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+    tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    tag=$BRANCH_NAME-$tags
     dockerfile=Dockerfile.develop
+    fi
     ;;
   master)
-    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
-    dockerfile=Dockerfile.develop
+  if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+    tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    tag=$BRANCH_NAME-$tags
+   dockerfile=Dockerfile.develop
+   fi
     ;;
   *)
-    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    if [ -z "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+    tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    BRANCH=$(git branch --contains $(git describe)|head -1|cut -d' ' -f2)
+    tag=$BRANCH-$tags
     dockerfile=Dockerfile.tag
+    fi
 esac
 
 services=$(cat $(dirname $0)/service-manifest.txt)
