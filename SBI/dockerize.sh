@@ -3,20 +3,20 @@ export PATH="$PATH:/usr/local/bin"
 #docker-compose build maven-app-image-docker
 case $BRANCH_NAME in
   qa)
-    tag=QA-${BUILD_NUMBER}
+    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     dockerfile=Dockerfile.develop
     ;;
   develop)
-    tag=Dev-${BUILD_NUMBER}
+    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     dockerfile=Dockerfile.develop
     ;;
   master)
-    tag=Prod-${BUILD_NUMBER}
+    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     dockerfile=Dockerfile.develop
     ;;
   *)
-    echo "Unknown branch '$BRANCH_NAME'"
-    exit 1
+    tag=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
+    dockerfile=Dockerfile.tag
 esac
 
 services=$(cat $(dirname $0)/service-manifest.txt)
