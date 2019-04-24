@@ -3,28 +3,28 @@ export PATH="$PATH:/usr/local/bin"
 #docker-compose build maven-app-image-docker
 case $BRANCH_NAME in
   qa)
-   if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+   if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')" ];then
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     tag=$BRANCH_NAME-$tags
     dockerfile=Dockerfile.develop
     fi
     ;;
   develop)
-  if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+  if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')" ];then
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     tag=$BRANCH_NAME-$tags
     dockerfile=Dockerfile.develop
     fi
     ;;
   master)
-  if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+  if [ -n "$(echo $BRANCH_NAME|grep '[a-zA-Z]')" ];then
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     tag=$BRANCH_NAME-$tags
    dockerfile=Dockerfile.develop
    fi
     ;;
   *)
-    if [ -z "$(echo $BRANCH_NAME|grep '[a-zA-Z]')";then
+    if [ -z "$(echo $BRANCH_NAME|grep '[a-zA-Z]')" ];then
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     BRANCH=$(git branch --contains $(git describe)|head -1|cut -d' ' -f2)
     tag=$BRANCH-$tags
