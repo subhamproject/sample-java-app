@@ -4,22 +4,22 @@ export PATH="$PATH:/usr/local/bin"
 case $BRANCH_NAME in
   qa)
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
-    tag="$BRANCH_NAME:$tags"
+    tag=$BRANCH_NAME-$tags
     dockerfile=Dockerfile.develop
     ;;
   develop)
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
-    tag="$BRANCH_NAME:$tags"
+    tag=$BRANCH_NAME-$tags
     dockerfile=Dockerfile.develop
     ;;
   master)
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
-    tag="$BRANCH_NAME:$tags"
-    dockerfile=Dockerfile.develop
+    tag=$BRANCH_NAME-$tags
+   dockerfile=Dockerfile.develop
     ;;
   *)
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
-    tag="$BRANCH_NAME:$tags"
+    tag=$BRANCH_NAME-$tags
     dockerfile=Dockerfile.tag
 esac
 
