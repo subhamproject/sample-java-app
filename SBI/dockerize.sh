@@ -24,6 +24,7 @@ case $BRANCH_NAME in
    fi
     ;;
   *)
+  echo $BRANCH_NAME
     if [ -z "$(echo $BRANCH_NAME|grep '[a-zA-Z]')" ];then
     tags=$(git describe | sed 's/-g[0-9a-f]\{7,8\}$//')
     BRANCH=$(git branch --contains $BRANCH_NAME|head -1|cut -d' ' -f2)
