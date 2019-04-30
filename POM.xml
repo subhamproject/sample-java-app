@@ -86,7 +86,7 @@
 	<distributionManagement>
         <repository>
             <id>s3.release</id>
-            <url>s3://rcx-test-test/release<url>
+            <url>s3://rcx-test-test/release</url>
         </repository>
         <snapshotRepository>
             <id>s3.snapshot</id>
