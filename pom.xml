@@ -35,12 +35,12 @@
     </plugins>
   </build>
   <extensions>
-			<extension>
-				<groupId>com.gkatzioura.maven.cloud</groupId>
-				<artifactId>s3-storage-wagon</artifactId>
-				<version>1.0</version>
-			</extension>
-		</extensions>
+ <extension>
+<groupId>com.gkatzioura.maven.cloud</groupId>
+	<artifactId>s3-storage-wagon</artifactId>
+<version>1.0</version>
+</extension>
+	</extensions>
   <distributionManagement>
 		<snapshotRepository>
 			<id>s3.snapshot</id>
