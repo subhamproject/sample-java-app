@@ -89,8 +89,8 @@
             <url>s3://rcx-test-test/url>
         </repository>
         <snapshotRepository>
-            <id>s3.release</id>
-            <url>s3://rcx-test-test</url>
+            <id>s3.snapshot</id>
+            <url>s3://rcx-test-test/snapshot</url>
         </snapshotRepository>
 </distributionManagement>
 
