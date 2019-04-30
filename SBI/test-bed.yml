@@ -9,3 +9,6 @@ services:
       - /etc/group:/etc/group:ro
       - "${JENKINS_HOME}:${JENKINS_HOME}:rw"
       - "${WORKSPACE}:${WORKSPACE}:rw"
+     environment:
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
