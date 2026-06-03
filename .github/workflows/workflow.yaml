@@ -109,7 +109,7 @@ jobs:
 
       - name: Build and Push Image with Kaniko
         run: |
-          sudo /kaniko/executor \
+          sudo -E /kaniko/executor \
             --context "${GITHUB_WORKSPACE}" \
             --dockerfile "${GITHUB_WORKSPACE}/docker/Dockerfile" \
             --destination "${{ steps.ecr.outputs.repository_uri }}:${{ github.sha }}" \
@@ -117,7 +117,10 @@ jobs:
             --cache=true \
             --cache-copy-layers \
             --snapshot-mode=redo \
-            --verbosity=info
+            --verbosity=info \
+            --ignore-path=/bin \
+            --ignore-path=/lib \
+            --ignore-path=/lib64
   deactivate-github-runner:
     needs: [activate-github-runner, build-code]
     runs-on: ubuntu-latest
