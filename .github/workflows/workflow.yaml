@@ -117,7 +117,6 @@ jobs:
             --cache=true \
             --cache-copy-layers \
             --snapshot-mode=redo \
-            --sandbox-root=/tmp/kaniko-sandbox \
             --verbosity=info
   deactivate-github-runner:
     needs: [activate-github-runner, build-code]
