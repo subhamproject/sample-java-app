@@ -108,16 +108,6 @@ jobs:
 
           echo "Using repository: $REPOSITORY_URI"
 
-      - name: Configure Kaniko Authentication
-        run: |
-          mkdir -p /kaniko/.docker
-
-          cat > /kaniko/.docker/config.json <<EOF
-          {
-            "credsStore": "ecr-login"
-          }
-          EOF
-
       - name: Build and Push Image with Kaniko
         run: |
           /kaniko/executor \
