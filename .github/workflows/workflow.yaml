@@ -118,9 +118,6 @@ jobs:
             --cache-copy-layers \
             --snapshot-mode=redo \
             --verbosity=info \
-            --ignore-path=/bin \
-            --ignore-path=/lib \
-            --ignore-path=/lib64
   deactivate-github-runner:
     needs: [activate-github-runner, build-code]
     runs-on: ubuntu-latest
