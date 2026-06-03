@@ -54,8 +54,8 @@ jobs:
            --task-definition runner \
            --network-configuration "awsvpcConfiguration={subnets=[${{ steps.network.outputs.subnets }}],securityGroups=[${{ steps.network.outputs.sg_id }}],assignPublicIp=DISABLED}" \
            --overrides '{"containerOverrides":[{"name":"runner","environment":[{"name":"GITHUB_REPO","value":"${{ github.repository }}"},{"name":"RUNNER_LABELS","value":"${{ steps.runner-label.outputs.vm_id }}"}]}]}')
-        TASK_ARN=$(echo $TASK_OUTPUT | jq -r '.tasks[0].taskArn')
-        echo "task_arn=$TASK_ARN" >> $GITHUB_OUTPUT
+          TASK_ARN=$(echo $TASK_OUTPUT | jq -r '.tasks[0].taskArn')
+          echo "task_arn=$TASK_ARN" >> $GITHUB_OUTPUT
 
   build-code:
     needs: activate-github-runner
