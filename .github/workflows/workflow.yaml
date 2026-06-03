@@ -80,6 +80,9 @@ jobs:
   deactivate-github-runner:
     needs: [activate-github-runner, build-code]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     if: always() 
     steps:
       - name: Configure AWS credentials
