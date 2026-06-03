@@ -117,7 +117,7 @@ jobs:
             --destination "${{ steps.ecr.outputs.repository_uri }}:latest" \
             --cache=true \
             --cache-copy-layers \
-            --snapshot-mode=redo \
+            --snapshot-mode=full \
             --verbosity=info
       
           
