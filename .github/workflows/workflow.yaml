@@ -59,7 +59,6 @@ jobs:
            --overrides '{"containerOverrides":[{"name":"runner","environment":[{"name":"GITHUB_REPO","value":"${{ github.repository }}"},{"name":"RUNNER_LABELS","value":"${{ steps.runner-label.outputs.vm_id }}"}]}]}')
           TASK_ARN=$(echo $TASK_OUTPUT | jq -r '.tasks[0].taskArn')
           echo "task_arn=$TASK_ARN" >> $GITHUB_OUTPUT
-
   build-code:
     needs: activate-github-runner
     runs-on:
@@ -117,10 +116,9 @@ jobs:
             --destination "${{ steps.ecr.outputs.repository_uri }}:latest" \
             --cache=true \
             --cache-copy-layers \
-            --snapshot-mode=full \
+            --snapshot-mode=redo \
+            --sandbox-root=/tmp/kaniko-sandbox \
             --verbosity=info
-      
-          
   deactivate-github-runner:
     needs: [activate-github-runner, build-code]
     runs-on: ubuntu-latest
