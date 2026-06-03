@@ -13,6 +13,7 @@ jobs:
       contents: read
     outputs:
       gitrunner_vm_id: ${{ steps.runner-label.outputs.vm_id }}
+      task_arn: ${{ steps.create-task.outputs.task_arn }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -46,17 +47,15 @@ jobs:
           echo "Security Group: $SG_ID"
      
       - name: Launch Fargate Spot Runner
+        id: create-task
         run: |
-         aws ecs run-task --cluster shared_git_runner_cluster \
+        TASK_OUTPUT=$(aws ecs run-task --cluster shared_git_runner_cluster \
            --capacity-provider-strategy capacityProvider=FARGATE_SPOT,weight=1 \
            --task-definition runner \
            --network-configuration "awsvpcConfiguration={subnets=[${{ steps.network.outputs.subnets }}],securityGroups=[${{ steps.network.outputs.sg_id }}],assignPublicIp=DISABLED}" \
-           --overrides '{"containerOverrides":[{"name":"runner","environment":[{"name":"GITHUB_REPO","value":"${{ github.repository }}"},{"name":"RUNNER_LABELS","value":"${{ steps.runner-label.outputs.vm_id }}"}]}]}'
-
-      - name: Wait For Runner Registration
-        run: |
-          echo "Waiting 60 seconds for runner registration..."
-          sleep 6
+           --overrides '{"containerOverrides":[{"name":"runner","environment":[{"name":"GITHUB_REPO","value":"${{ github.repository }}"},{"name":"RUNNER_LABELS","value":"${{ steps.runner-label.outputs.vm_id }}"}]}]}')
+        TASK_ARN=$(echo $TASK_OUTPUT | jq -r '.tasks[0].taskArn')
+        echo "task_arn=$TASK_ARN" >> $GITHUB_OUTPUT
 
   build-code:
     needs: activate-github-runner
@@ -77,3 +76,21 @@ jobs:
           fetch-depth: 0
       - name: Build with Maven
         run: mvn clean install
+          
+  deactivate-github-runner:
+    needs: [activate-github-runner, build-code]
+    runs-on: ubuntu-latest
+    if: always() 
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.TERRAFORM_ROLE }}
+          aws-region: ap-south-2
+
+      - name: Stop ECS Runner Task
+        run: |
+          aws ecs stop-task \
+            --cluster shared_git_runner_cluster \
+            --task "${{ needs.activate-github-runner.outputs.task_arn }}" \
+            --reason "GitHub Action workflow execution complete"
