@@ -1,0 +1,79 @@
+name: Custom Github SelfHosted Runner Maven Build 
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+jobs:
+  activate-github-runner:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      gitrunner_vm_id: ${{ steps.runner-label.outputs.vm_id }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.TERRAFORM_ROLE }}
+          aws-region: ap-south-2
+
+      - name: Generate Runner Label
+        id: runner-label
+        run: |
+          VM_ID=$(uuidgen)
+          echo "vm_id=$VM_ID" >> $GITHUB_OUTPUT
+
+      - name: Discover Networking
+        id: network
+        run: |
+          SUBNETS=$(aws ec2 describe-subnets \
+            --filters "Name=tag:kubernetes.io/role/internal-elb,Values=1" \
+            --query 'Subnets[].SubnetId' \
+            --output text | tr '\t' ',')
+
+          SG_ID=$(aws ec2 describe-security-groups \
+            --filters "Name=group-name,Values=shared-github-runner-sg" \
+            --query 'SecurityGroups[0].GroupId' \
+            --output text)
+
+          echo "subnets=$SUBNETS" >> $GITHUB_OUTPUT
+          echo "sg_id=$SG_ID" >> $GITHUB_OUTPUT
+
+          echo "Subnets: $SUBNETS"
+          echo "Security Group: $SG_ID"
+     
+      - name: Launch Fargate Spot Runner
+        run: |
+         aws ecs run-task --cluster shared_git_runner_cluster \
+           --capacity-provider-strategy capacityProvider=FARGATE_SPOT,weight=1 \
+           --task-definition runner \
+           --network-configuration "awsvpcConfiguration={subnets=[${{ steps.network.outputs.subnets }}],securityGroups=[${{ steps.network.outputs.sg_id }}],assignPublicIp=DISABLED}" \
+           --overrides '{"containerOverrides":[{"name":"runner","environment":[{"name":"GITHUB_REPO","value":"${{ github.repository }}"},{"name":"RUNNER_LABELS","value":"${{ steps.runner-label.outputs.vm_id }}"}]}]}'
+
+      - name: Wait For Runner Registration
+        run: |
+          echo "Waiting 60 seconds for runner registration..."
+          sleep 6
+
+  build-code:
+    needs: activate-github-runner
+    runs-on:
+      - self-hosted
+      - ${{ needs.activate-github-runner.outputs.gitrunner_vm_id }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Verify Runner
+        run: |
+          echo "Running on self-hosted runner"
+          hostname
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Build with Maven
+        run: mvn clean install
