@@ -3,11 +3,17 @@ name: Build Preview Image
 
 on:
   pull_request:
-    types: [labeled, synchronize]
+    branches:
+      - main
+      - master
+    types:
+      - labeled
 
 jobs:
   build:
-    if: contains(github.event.pull_request.labels.*.name, 'preview')
+    if: |
+      github.event.label.name == 'preview' ||
+      github.event.label.name == 'deploy-preview'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
