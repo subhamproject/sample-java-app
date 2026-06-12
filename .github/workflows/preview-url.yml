@@ -2,11 +2,17 @@
 name: Post Preview URL
 on:
   pull_request:
-    types: [opened, synchronize]
+    branches:
+      - main
+      - master
+    types:
+      - labeled
 
 jobs:
   comment:
-    if: contains(github.event.pull_request.labels.*.name, 'preview')
+    if: |
+      github.event.label.name == 'preview' ||
+      github.event.label.name == 'deploy-preview'
     runs-on: ubuntu-latest
     permissions:
       issues: write
