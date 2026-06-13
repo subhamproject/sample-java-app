@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 env:
   AWS_REGION: ap-south-2
-  ECR_REPOSITORY: maven
+  ECR_REPOSITORY: "${{ github.event.repository.name }}"
 jobs:
   activate-github-runner:
     runs-on: ubuntu-latest
