@@ -1,0 +1,23 @@
+replicaCount: 2
+image:
+  repository: 458214779508.dkr.ecr.ap-south-2.amazonaws.com/sample-java-app
+  tag: latest
+  pullPolicy: Always
+service:
+  type: ClusterIP
+  port: 80
+ingress:
+  enabled: true
+  className: haproxy
+  hostname: app.dsp.codes
+  annotations:
+    cert-manager.io/cluster-issuer: dev-letsencrypt-route53-private
+    haproxy.org/ssl-passthrough: "true"
+  tls: true
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
