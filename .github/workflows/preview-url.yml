@@ -12,8 +12,8 @@ on:
 jobs:
   comment:
     if: |
-      github.event.label.name == 'preview' ||
-      github.event.label.name == 'deploy-preview'
+      github.event.label.name == 'preview' ||      #Choose either of the lables in PR to trigger this
+      github.event.label.name == 'deploy-preview'  #Choose either of the lables in PR to trigger this
 
     runs-on: ubuntu-latest
 
