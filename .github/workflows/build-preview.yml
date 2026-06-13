@@ -136,14 +136,16 @@ jobs:
             --ignore-path=/usr/lib64
   deactivate-github-runner:
     needs: [activate-github-runner, build-code]
-    if: |
-      github.event.label.name == 'preview' ||
-      github.event.label.name == 'deploy-preview'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    if: always() 
+    if: |
+      always() &&
+      (
+      github.event.label.name == 'preview' ||
+      github.event.label.name == 'deploy-preview'
+      )
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
