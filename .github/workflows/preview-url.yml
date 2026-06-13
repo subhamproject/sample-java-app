@@ -41,10 +41,10 @@ jobs:
             const repo = context.repo.repo;
 
             // build preview URL
-            const previewUrl = `https://preview.${repo}-${prBranch}-pr-${prNumber}.preview.dsp.codes`;
+            const previewUrl = `https://preview.${repo}-${prBranch}-pr-${prNumber}.dsp.codes`;
 
             // ArgoCD app URL (optional)
-            const argoUrl = `https://argocd.dsp.codes/applications/preview.${repo}-${prBranch}-pr-${prNumber}.preview.dsp.codes`;
+            const argoUrl = `https://argocd.dsp.codes/applications/preview.${repo}-${prBranch}-pr-${prNumber}.dsp.codes`;
 
             await github.rest.issues.createComment({
               issue_number: prNumber,
