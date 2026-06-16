@@ -1,0 +1,27 @@
+name: Docker Build Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: shared-arc-runner-set-dind
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Dockerfile
+        run: |
+          cat > Dockerfile <<EOF
+          FROM alpine:latest
+          RUN echo "Hello ARC"
+          CMD ["echo","Hello ARC"]
+          EOF
+
+      - name: Build image
+        run: |
+          docker build -t arc-test:latest .
+
+      - name: List image
+        run: |
+          docker images
